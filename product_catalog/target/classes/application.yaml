@@ -1,8 +1,0 @@
-app:
-  url: ${APP_URL}
-
-spring:
-  cloud:
-    loadbalancer:
-      ribbon:
-        enabled: false

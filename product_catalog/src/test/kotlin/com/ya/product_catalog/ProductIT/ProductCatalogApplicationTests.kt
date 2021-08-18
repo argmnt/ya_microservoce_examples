@@ -1,23 +1,20 @@
 package com.ya.product_catalog.ProductIT
 
+import com.mongodb.assertions.Assertions
 import com.ya.product_catalog.product_catalog.Product
-import com.ya.product_catalog.product_catalog.ProductClient
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
-import org.assertj.core.api.Assertions
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.ParameterizedTypeReference
+import org.springframework.http.HttpMethod
 
 
 @SpringBootTest
-class ProductCatalogApplicationTests(@Autowired var productClient : ProductClient) {
+class ProductCatalogApplicationTests(@Value("\${app.url}") val baseURL: String) {
 
 	private val testRestTemplate: TestRestTemplate = TestRestTemplate();
 	private val productsResourceUrl: String = "/products";
-
-	@Value("\${app.security.jwt.keystore-location}")
-	private val baseURL: String? = null
 
 	@Test
 	fun contextLoads() {
@@ -25,7 +22,12 @@ class ProductCatalogApplicationTests(@Autowired var productClient : ProductClien
 
 	@Test
 	fun getProducts() {
-		val products = productClient.getProducts();
-	}
+		val products = testRestTemplate.exchange(
+			baseURL + productsResourceUrl,
+			HttpMethod.GET,
+			null,
+			object : ParameterizedTypeReference<List<Product?>?>() {})
 
+		Assertions.assertTrue(!products.body.isNullOrEmpty())
+	}
 }
