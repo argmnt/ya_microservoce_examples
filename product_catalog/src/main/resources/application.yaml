@@ -2,6 +2,9 @@ app:
   url: ${APP_URL}
 
 spring:
+  data:
+    mongodb:
+      uri: ${MONGODB_URL}
   cloud:
     loadbalancer:
       ribbon:

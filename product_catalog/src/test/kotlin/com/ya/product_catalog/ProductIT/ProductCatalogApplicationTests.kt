@@ -6,12 +6,16 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
 
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ProductCatalogApplicationTests(@Value("\${app.url}") val baseURL: String) {
+
+	@LocalServerPort
+	private val port = 0
 
 	private val testRestTemplate: TestRestTemplate = TestRestTemplate();
 	private val productsResourceUrl: String = "/products";
@@ -23,7 +27,7 @@ class ProductCatalogApplicationTests(@Value("\${app.url}") val baseURL: String) 
 	@Test
 	fun getProducts() {
 		val products = testRestTemplate.exchange(
-			baseURL + productsResourceUrl,
+			baseURL + port + productsResourceUrl,
 			HttpMethod.GET,
 			null,
 			object : ParameterizedTypeReference<List<Product?>?>() {})
