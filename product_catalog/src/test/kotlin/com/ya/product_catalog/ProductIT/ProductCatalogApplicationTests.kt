@@ -34,4 +34,13 @@ class ProductCatalogApplicationTests(@Value("\${app.url}") val baseURL: String) 
 
 		Assertions.assertTrue(!products.body.isNullOrEmpty())
 	}
+
+	@Test
+	fun getProduct() {
+		val firstProductUri = "/1"
+		val product = testRestTemplate.getForEntity(
+				baseURL + port + productsResourceUrl + firstProductUri,
+				Product::class.java)
+		Assertions.assertNotNull(product)
+	}
 }
